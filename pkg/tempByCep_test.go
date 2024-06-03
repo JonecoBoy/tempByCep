@@ -1,9 +1,8 @@
 package main
 
 import (
-	"fmt"
-	"github.com/JonecoBoy/labCloudRun/pkg/external"
-	"github.com/JonecoBoy/labCloudRun/pkg/utils"
+	"github.com/JonecoBoy/tempByCep/pkg/external"
+	"github.com/JonecoBoy/tempByCep/pkg/utils"
 	"reflect"
 	"strings"
 	"testing"
@@ -39,7 +38,6 @@ func TestCepConcurrencyInvalidZip(t *testing.T) {
 	if err == nil {
 		t.Fatalf("CepConcurrency() returned a value instead of an err: %v", err)
 	}
-	fmt.Println(err.Error())
 	if err.Error() != "invalid zipcode" {
 		t.Errorf("CepConcurrency() did not return an invalid zipcode error")
 	}

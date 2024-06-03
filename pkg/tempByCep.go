@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/JonecoBoy/labCloudRun/pkg/external"
-	"github.com/JonecoBoy/labCloudRun/pkg/utils"
+	"github.com/JonecoBoy/tempByCep/pkg/external"
+	"github.com/JonecoBoy/tempByCep/pkg/utils"
 	"log"
 	"net/http"
 	"strings"
@@ -85,7 +85,7 @@ func tempHandler(w http.ResponseWriter, r *http.Request) {
 		if err.Error() == "can not find zipcode" {
 			w.WriteHeader(http.StatusNotFound) // 404
 		}
-		fmt.Println(err.Error())
+
 		w.Write([]byte(err.Error()))
 		return
 	}

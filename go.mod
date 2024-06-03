@@ -1,4 +1,4 @@
-module github.com/JonecoBoy/labCloudRun
+module github.com/JonecoBoy/tempByCep
 
 go 1.21
 
