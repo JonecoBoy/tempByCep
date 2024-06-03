@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -25,7 +26,8 @@ type tempResponse struct {
 }
 
 func main() {
-
+	// allow insecure connection
+	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 	mux := http.NewServeMux()
 	// podia ter passado anonima
 	mux.HandleFunc("/cep/", cepHandler)
