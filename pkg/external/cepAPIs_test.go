@@ -4,6 +4,8 @@ import (
 	"reflect"
 	"strings"
 	"testing"
+
+	"github.com/JonecoBoy/tempByCep/pkg/utils"
 )
 
 func TestViaCep(t *testing.T) {
@@ -25,19 +27,19 @@ func TestViaCep(t *testing.T) {
 	for _, field := range fields {
 		val := viaCepVal.FieldByName(field)
 		if !val.IsValid() {
-			t.Errorf("ViaCep() did not return a Marine struct with the field %s", field)
+			t.Errorf("ViaCep() did not return a a valid struct with the field %s", field)
 		}
 	}
 }
 
-func TestViaCepInvalidZip(t *testing.T) {
+func TestViaCepZipNotFound(t *testing.T) {
 	cep := "90541155"
 	_, err := ViaCep(cep)
 	if err == nil {
 		t.Fatalf("ViaCep() returned a value instead of an err: %v", err)
 	}
-	if err.Error() != "invalid zipcode" {
-		t.Errorf("ViaCep() did not return an invalid zipcode error")
+	if err.Error() != utils.ZipNotFoundError.Error() {
+		t.Errorf("ViaCep() did not return an " + utils.ZipNotFoundError.Error() + " zipcode error")
 	}
 
 }
@@ -48,8 +50,8 @@ func TestViaCepInvalidFormat(t *testing.T) {
 	if err == nil {
 		t.Fatalf("ViaCep() returned a value instead of an err: %v", err)
 	}
-	if err.Error() != "can not find zipcode" {
-		t.Errorf("ViaCep() did not return an invalid zipcode error")
+	if err.Error() != utils.InvalidZipError.Error() {
+		t.Errorf("ViaCep() did not return an " + utils.InvalidZipError.Error() + " zipcode error")
 	}
 }
 
@@ -72,19 +74,19 @@ func TestBrasilApiCep(t *testing.T) {
 	for _, field := range fields {
 		val := viaCepVal.FieldByName(field)
 		if !val.IsValid() {
-			t.Errorf("BrasilApiCep() did not return a Marine struct with the field %s", field)
+			t.Errorf("BrasilApiCep() did not return a valid struct with the field %s", field)
 		}
 	}
 }
 
-func TestBrasilApiCepInvalidZip(t *testing.T) {
+func TestBrasilApiCepZipNotFound(t *testing.T) {
 	cep := "90541155"
 	_, err := BrasilApiCep(cep)
 	if err == nil {
 		t.Fatalf("BrasilApi() returned a value instead of an err: %v", err)
 	}
-	if err.Error() != "invalid zipcode" {
-		t.Errorf("BrasilApi() did not return an invalid zipcode error")
+	if err.Error() != utils.ZipNotFoundError.Error() {
+		t.Errorf("BrasilApi() did not return an " + utils.ZipNotFoundError.Error() + " zipcode error")
 	}
 
 }
@@ -95,7 +97,7 @@ func TestBrasilApiCepInvalidFormat(t *testing.T) {
 	if err == nil {
 		t.Fatalf("ViaCep() returned a value instead of an err: %v", err)
 	}
-	if err.Error() != "can not find zipcode" {
-		t.Errorf("ViaCep() did not return an invalid zipcode error")
+	if err.Error() != utils.InvalidZipError.Error() {
+		t.Errorf("BrasilApi() did not return an " + utils.InvalidZipError.Error() + " zipcode error")
 	}
 }

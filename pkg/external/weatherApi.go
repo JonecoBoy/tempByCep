@@ -51,8 +51,8 @@ type AirQuality struct {
 }
 
 type CurrentModel struct {
-	Location *Location `json:"location"`
-	Current  *Current  `json:"current"`
+	// Location *Location `json:"location"`
+	Current *Current `json:"current"`
 }
 
 type Current struct {

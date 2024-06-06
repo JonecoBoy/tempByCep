@@ -5,9 +5,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/JonecoBoy/tempByCep/pkg/utils"
 	"io"
 	"net/http"
+
+	"github.com/JonecoBoy/tempByCep/pkg/utils"
 )
 
 type AddressDataViaCep struct {
@@ -21,7 +22,7 @@ type AddressDataViaCep struct {
 func ViaCep(cep string) (Address, error) {
 	err := utils.ValidateCep(cep)
 	if err != nil {
-		return Address{}, errors.New("can not find zipcode")
+		return Address{}, utils.InvalidZipError
 	}
 	ctx := context.Background()
 	// o contexto expira em 1 segundo!
@@ -41,13 +42,13 @@ func ViaCep(cep string) (Address, error) {
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return Address{}, errors.New("can not find zipcode")
+		return Address{}, utils.ZipNotFoundError
 
 	}
 
 	if ctx.Err() == context.DeadlineExceeded {
 		fmt.Println("Api fetch timeout exceeed.")
-		return Address{}, errors.New("Api fetch timeout exceeed.")
+		return Address{}, errors.New("api fetch timeout exceeed")
 	}
 
 	// depois de tudo termina e faz o body
@@ -64,7 +65,7 @@ func ViaCep(cep string) (Address, error) {
 
 	//empty struct = valid format but no data
 	if (jsonData == AddressDataViaCep{}) {
-		return Address{}, errors.New("invalid zipcode")
+		return Address{}, utils.ZipNotFoundError
 	}
 
 	addressData := Address{

@@ -2,11 +2,14 @@ package utils
 
 import (
 	"errors"
-	"golang.org/x/text/transform"
-	"golang.org/x/text/unicode/norm"
+	"fmt"
+	"net/http"
 	"strconv"
 	"strings"
 	"unicode"
+
+	"golang.org/x/text/transform"
+	"golang.org/x/text/unicode/norm"
 )
 
 type HttpError struct {
@@ -14,8 +17,19 @@ type HttpError struct {
 	Message string
 }
 
-func (e *HttpError) Error() string {
-	return e.Message
+// Error implements error.
+func (e HttpError) Error() string {
+	return strings.Join([]string{fmt.Sprint(e.Code), e.Message}, " ")
+}
+
+var InvalidZipError = HttpError{
+	Code:    http.StatusUnprocessableEntity,
+	Message: "invalid zipcode",
+}
+
+var ZipNotFoundError = HttpError{
+	Code:    http.StatusNotFound,
+	Message: "can not find zipcode",
 }
 
 func ValidateCep(cep string) error {

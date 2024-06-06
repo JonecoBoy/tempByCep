@@ -5,10 +5,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/JonecoBoy/tempByCep/pkg/utils"
 	"io"
 	"net/http"
 	"time"
+
+	"github.com/JonecoBoy/tempByCep/pkg/utils"
 )
 
 const requestExpirationTime = 10 * time.Second
@@ -31,7 +32,7 @@ type errorResponse struct {
 func BrasilApiCep(cep string) (Address, error) {
 	err := utils.ValidateCep(cep)
 	if err != nil {
-		return Address{}, errors.New("can not find zipcode")
+		return Address{}, utils.InvalidZipError
 	}
 	ctx := context.Background()
 	// o contexto expira em 1 segundo!
@@ -53,7 +54,7 @@ func BrasilApiCep(cep string) (Address, error) {
 	if resp.StatusCode != http.StatusOK {
 
 		if resp.StatusCode == http.StatusNotFound {
-			return Address{}, errors.New("invalid zipcode")
+			return Address{}, utils.ZipNotFoundError
 		}
 
 		return Address{}, errors.New("unkown error")
@@ -62,7 +63,7 @@ func BrasilApiCep(cep string) (Address, error) {
 
 	if ctx.Err() == context.DeadlineExceeded {
 		fmt.Println("Api fetch timeout exceeed.")
-		return Address{}, errors.New("Api fetch timeout exceeed.")
+		return Address{}, errors.New("api fetch timeout exceeed")
 	}
 
 	// depois de tudo termina e faz o body
@@ -79,7 +80,7 @@ func BrasilApiCep(cep string) (Address, error) {
 
 	//empty struct = valid format but no data
 	if (addressData == Address{}) {
-		return Address{}, errors.New("invalid zipcode")
+		return Address{}, utils.ZipNotFoundError
 	}
 
 	addressData.Source = "brasilAPI"

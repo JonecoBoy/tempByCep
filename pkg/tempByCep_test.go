@@ -1,11 +1,12 @@
 package main
 
 import (
-	"github.com/JonecoBoy/tempByCep/pkg/external"
-	"github.com/JonecoBoy/tempByCep/pkg/utils"
 	"reflect"
 	"strings"
 	"testing"
+
+	"github.com/JonecoBoy/tempByCep/pkg/external"
+	"github.com/JonecoBoy/tempByCep/pkg/utils"
 )
 
 func TestCepConcurrency(t *testing.T) {
@@ -32,26 +33,26 @@ func TestCepConcurrency(t *testing.T) {
 	}
 }
 
-func TestCepConcurrencyInvalidZip(t *testing.T) {
+func TestCepConcurrencyZipNotFound(t *testing.T) {
 	cep := "90541155"
 	_, err := CepConcurrency(cep)
 	if err == nil {
 		t.Fatalf("CepConcurrency() returned a value instead of an err: %v", err)
 	}
-	if err.Error() != "invalid zipcode" {
-		t.Errorf("CepConcurrency() did not return an invalid zipcode error")
+	if err.Error() != utils.ZipNotFoundError.Error() {
+		t.Errorf("CepConcurrency() did not return an " + utils.ZipNotFoundError.Error() + " error")
 	}
 
 }
 
-func TestCepConcurrencyInvalidFormat(t *testing.T) {
+func TestCepConcurrencyInvalidZipFormat(t *testing.T) {
 	cep := "905411551"
 	_, err := CepConcurrency(cep)
 	if err == nil {
 		t.Fatalf("CepConcurrency() returned a value instead of an err: %v", err)
 	}
-	if err.Error() != "can not find zipcode" {
-		t.Errorf("CepConcurrency() did not return an invalid zipcode error")
+	if err.Error() != utils.InvalidZipError.Error() {
+		t.Errorf("CepConcurrency() did not return an " + utils.InvalidZipError.Error() + " error")
 	}
 }
 
@@ -84,11 +85,6 @@ func TestGetTempByCep(t *testing.T) {
 	result2, err := external.CurrentWeather(query, lang)
 	if err != nil {
 		t.Errorf("Current() returned an error: %v", err)
-	}
-
-	// Check if the fields are present
-	if *result2.Location == (external.Location{}) {
-		t.Errorf("Current() returned an empty Location struct")
 	}
 
 	if *result2.Current == (external.Current{}) {

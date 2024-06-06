@@ -55,11 +55,6 @@ func TestCurrent(t *testing.T) {
 		t.Errorf("Current() returned an error: %v", err)
 	}
 
-	// Check if the fields are present
-	if *result.Location == (Location{}) {
-		t.Errorf("Current() returned an empty Location struct")
-	}
-
 	if *result.Current == (Current{}) {
 		t.Errorf("Current() returned an empty Current struct")
 	}

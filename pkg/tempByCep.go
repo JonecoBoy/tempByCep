@@ -5,12 +5,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/JonecoBoy/tempByCep/pkg/external"
-	"github.com/JonecoBoy/tempByCep/pkg/utils"
 	"log"
 	"net/http"
 	"strings"
 	"time"
+
+	"github.com/JonecoBoy/tempByCep/pkg/external"
+	"github.com/JonecoBoy/tempByCep/pkg/utils"
 )
 
 type Result struct {
@@ -19,10 +20,10 @@ type Result struct {
 }
 
 type tempResponse struct {
-	Location *external.Location `json:"location"`
-	Temp_C   float32            `json:"temp_c"`
-	Temp_F   float32            `json:"temp_f"`
-	Temp_K   float32            `json:"temp_k"`
+	// Location *external.Location `json:"location"`
+	Temp_C float32 `json:"temp_c"`
+	Temp_F float32 `json:"temp_f"`
+	Temp_K float32 `json:"temp_k"`
 }
 
 func main() {
@@ -81,7 +82,7 @@ func tempHandler(w http.ResponseWriter, r *http.Request) {
 	cep = strings.ReplaceAll(cep, "-", "")
 	c, err := CepConcurrency(cep)
 	if err != nil {
-		if err.Error() == "invalid zipcode" {
+		if err.Error() == "404 can not find zipcode" {
 			w.WriteHeader(http.StatusUnprocessableEntity) // 422
 		}
 		if err.Error() == "can not find zipcode" {
@@ -106,10 +107,10 @@ func tempHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	tempResponse := tempResponse{
-		Location: temp.Location,
-		Temp_C:   temp.Current.TempC,
-		Temp_F:   temp.Current.TempF,
-		Temp_K:   temp.Current.TempC + 273,
+		//Location: temp.Location,
+		Temp_C: temp.Current.TempC,
+		Temp_F: temp.Current.TempF,
+		Temp_K: temp.Current.TempC + 273,
 	}
 	jsonData, err := json.Marshal(tempResponse)
 	if err != nil {
